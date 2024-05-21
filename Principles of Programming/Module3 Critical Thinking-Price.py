@@ -3,7 +3,7 @@ Approach:
 Use input function to obtain food price. Then use expressions to calculate food with tip and total price. Print out variables. Use while loop to handle input errors. 
 Challenges: 
 •	Printed varied decimal points. I used round(price, 2) so it makes sense of the price scenario. 
-•	I didn’t give prompt to enter an integer and it throws an error when you enter non-numerical value. “ValueError: could not convert string to float”. 
+•	I did/'t give prompt to enter an integer and it throws an error when you enter non-numerical value. “ValueError: could not convert string to float”. 
 •	I created a while loop to handle the exceptions and alert message.
 •	I used a while loop to test whether the input is numerical, if not, loop back. But I accidentally created infinite loop. Below. If fixed it by moving the input_price =input() in the while  loop.
 """
