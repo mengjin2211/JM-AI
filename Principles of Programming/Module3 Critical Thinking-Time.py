@@ -1,10 +1,7 @@
-"""
+""" Module 3 Critical Thinking -Part Two Time
 Ask for time now and time delta to wait for alarm. Calculate the time alarm will go off in 24-hour format.
 Approach: 
 Use datetime module to calculate and display future time calculated from two inputs: hour and time delta from user. Use try and except to handle input errors.  
-Challenges: 
-•	It was challenging to convert user input from integer to standard time format. I do not want to make users to type in the standard date time "%Y-%m-%d %H:%M:%S" which is complex & prone to error. I only asked for two digit integer representing the hours. Solution was the combine function, taking in today’s date and concatenate the date with the user input time.
-•	Experimented where to place if statement to check 0-23 hour range and keywords such as “continue”, “break” and “return”.   
 """
 #from datetime import datetime, time, timedelta 
 import datetime
