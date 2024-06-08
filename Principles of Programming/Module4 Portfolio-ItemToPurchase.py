@@ -15,7 +15,7 @@ class ItemToPurchase:
     def __iter__(self):
         return iter([self.item_name, self.item_price, self.item_quantity])
 
-# create get_item function to prompt input. Use input to create class instance.         
+# create get_item function to prompt inputs which are used to initiate class instance.         
 def get_item():
     while True:
         try:
@@ -31,9 +31,9 @@ def get_item():
                 '\n',"Error Message: ",str(e))
             continue
 
-# main function loops num_item (parameter) times, get instances and print prices.
-# n as input parameter. This will allow user to reuse the code and modify the number of items.
-def main(num_item):
+# main function loops get_item function num_item times, get instances and print prices.
+# num_item as parameter allowing the reuse of the code for other scenarios.
+def main(num_item=2):
     total=0
     objectCollection=[]
     for i in range (num_item):
@@ -46,15 +46,7 @@ def main(num_item):
  
     print (f"Total: ${total}" )
 
-if __name__ == "__main__": 
-    while True:
-        try:
-            num_items = int(input("Enter the number of items in integer: "))
-            break
-        except ValueError as e:
-            print("Invalid Value. Integer only.")
-            continue    
-    main(num_items)
+if __name__ == "__main__": main(2)
 
     
 
