@@ -44,8 +44,7 @@ def main(num_item=2):
     for item_obj in objectCollection:
         total+=item_obj.print_item_cost()
  
-    print (f"Total: ${total}" )
-
+    print("Total: ${:.2f}".format(total))
 if __name__ == "__main__": main(2)
 
     
