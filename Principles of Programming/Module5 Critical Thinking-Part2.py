@@ -6,18 +6,17 @@ def bookPurchased ():
     while True:
         try:
             number_book=int(input('Input the number of books the student purchased this month (positive integer): '))
-            if number_book>=0:
-                return number_book
-                break
-            else:
-                print('You have entered negative number. Only positive integer number please.')
-                continue
+            if number_book<0:
+                raise ValueError ('You have entered negative number.')
+            
+            return number_book
+         
         except ValueError as e:
-            print(e,'\n','Enter a valid positive integer number.')
-
+            print(e, '\nEnter a valid positive integer number.')
+            continue #optional
 
 def credit_cal ():
-    """Evaludate book number in multi-way condition statement. 
+    """Evaluate book number in multi-way condition statement. 
     Pass value to credit variable. Return book number & credit."""
     books_purchased=bookPurchased ()
     credit=0 
@@ -32,7 +31,7 @@ def credit_cal ():
     elif books_purchased>=8:
         credit=60
 
-    return books_purchased, credit
+    return (books_purchased, credit)
 
 if __name__ == "__main__": 
     books, cred=credit_cal()

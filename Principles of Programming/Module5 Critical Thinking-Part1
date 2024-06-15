@@ -1,3 +1,52 @@
+
+
+def input_year():
+    """
+    Prompt the user to input the number of years and validate the input.
+    Ensure the input is a positive integer between 0 and 20.
+    """
+    while True:
+        try:
+            inputYr=int(input("Input number of Years in integer between 0-20: "))
+            if 0<=inputYr<=20:
+                return inputYr
+            else:
+                raise ValueError ('Only integer number 0-20 please.')
+        except ValueError as e:
+            print(e,'\n','Enter a valid number of years between 0-20.')
+            continue
+
+def input_precipitation(Y): 
+    """ This function meets requirements from part1 of the Module5 assignment.
+    Y is the year parameter that takes input_year() function result as the argument."""
+    total_months=0
+    total_precipitation=0
+    for year in range(1, Y + 1):
+        for month in range(1, 13):
+            while True:
+                try:
+                    precipitation = float(input(f"Enter the inches of rainfall between 0-100 for Year {year}, Month {month}: "))               
+                    
+                    if precipitation>100 or precipitation<0:
+                        raise ValueError ("Invalid rainfall amount")
+
+                    total_months += 1
+                    total_precipitation += precipitation
+                    break
+                except ValueError as e: 
+                        print(e, '\nEnter a valid value of rainfall between 0-100.')
+
+    return total_precipitation, total_months
+
+def user_defined_rainfall():
+    rain, mon=input_precipitation(input_year())
+    if mon>0:
+        avg=round(rain/mon,2)
+    else:
+        avg=0
+    print ( f'\n The number of months:\t\t{mon};\n Total rainfall (inch):\t\t{round(rain,2)};\n Average rainfall (inch):\t{avg} \n')
+
+# I took the liberty to compose fictitous data in case we don't want users to enter many times. 
 def data ():
     """
     Generate fictitious rainfall data for 20 years (2004-2023) by month using NumPy and Pandas.
@@ -19,27 +68,6 @@ def data ():
 
     return rainfall_df
 
-def input_year():
-    """
-    Prompt the user to input the number of years and validate the input.
-    Ensure the input is a positive integer between 0 and 20.
-    """
-    while True:
-        try:
-            inputYr=int(input("Input number of Years in integer between 0-20: "))
-            if 0<=inputYr<=20:
-                return inputYr
-                break
-            elif inputYr>20:
-                print('Exceeding the max number of years 20. Only integer number 0-20 please.')
-                continue
-            elif inputYr<0:
-                print('You\'ve entered a negative number. Only integer number 0-20 please.')
-                continue
-        except ValueError as e:
-            print(e,'\n','Enter a valid number of years between 0-20.')
-            continue
-
 def fictitious_rainfall():
     """
     Calculate rainfall statistics based on fictitious rainfall data. Save input time!
@@ -47,12 +75,8 @@ def fictitious_rainfall():
     rainfall=data();    
     current_yr=2024
     start_yr=current_yr-input_year()
-    years = rainfall.index.levels[0]
-    months = rainfall.index.levels[1]
-    mon=0
-    yr=0
-    rain=0
-    avg=0
+    years, months = rainfall.index.levels[0], rainfall.index.levels[1]
+    mon, yr, rain, avg = 0, 0, 0, 0
     for year in years[start_yr-min(years.values):current_yr-min(years.values)]:
         yr+=1
         for month in months:
@@ -63,45 +87,9 @@ def fictitious_rainfall():
     else:
         avg=0
     print ( f'\n The number of months:\t\t{mon};\n Total rainfall (inch):\t\t{round(rain,2)};\n Average rainfall (inch):\t{avg} \n')
-
-def input_precipitation(Y): 
-    """ This function meets requirements from part1 of the Module5 assignment.
-    Y is the year parameter that takes input_year() function result as the argument."""
-    total_months=0
-    total_precipitation=0
-    for year in range(1, Y + 1):
-        for month in range(1, 13):
-            while True:
-                try:
-                    precipitation = float(input(f"Enter the inches of rainfall for Year {year}, Month {month}: "))               
-                    
-                    if 0<=precipitation<=100:
-                        total_months += 1
-                        total_precipitation += precipitation
-                    elif precipitation>100:
-                        total_months += 0
-                        total_precipitation += 0
-                        print(f"Impossible number. Precipitation number in inches is too large. Input ingnored.")
-                    else: 
-                        total_months += 1
-                        total_precipitation += abs(precipitation)
-                        print(f"Rainfall cannot be negative. Absolute value applied {abs(precipitation)} instead.")
-                    break
-                except ValueError as e: 
-                    print(e,'\n','Enter a valid value of rainfall between 0-100.')
-
-    return total_precipitation, total_months
-
-def user_defined_rainfall():
-    rain, mon=input_precipitation(input_year())
-    if mon>0:
-        avg=round(rain/mon,2)
-    else:
-        avg=0
-    print ( f'\n The number of months:\t\t{mon};\n Total rainfall (inch):\t\t{round(rain,2)};\n Average rainfall (inch):\t{avg} \n')
  
 if __name__ == "__main__":
-    print( '\nUser-defined monthly rainfall over a period of years.\n','------------')
+    print( '\nUser-defined monthly rainfall over a period of years.\n','-'*10)
     user_defined_rainfall() 
-    print( '\nRainfall from fictitious record over a period of years.\n' ,'------------')
+    print( '\nRainfall from fictitious record over a period of years.\n' ,'-'*10)
     fictitious_rainfall()   
