@@ -6,9 +6,10 @@ class ItemToPurchase:
         self.item_quantity = int(item_quantity)   
         self.item_description=str(item_description)
     # calculate price. 
-    def item_cost (self):
+    def print_item_cost (self, print_output=True):
         price=self.item_price * self.item_quantity
-        #print(f"{self.item_name} {self.item_quantity} @ ${self.item_price:.2f} = ${price:.2f}")
+        if print_output:
+            print(f"{self.item_name} {self.item_quantity} @ ${self.item_price:.2f} = ${price:.2f}")
         return price
     # make the class object iterable
     def __iter__(self):
@@ -56,9 +57,9 @@ class ShoppingCart:
         removed=[i for i in self.cart_items if i.item_name==itemName] 
         self.cart_items=[i for i in self.cart_items if i.item_name!=itemName]
         if removed:
-            print('Item not found in cart. Nothing removed.')
-        else:
             print(f'{itemName} removed.')
+        else:
+            print('Item not found in cart. Nothing removed.')
         
     def modify_item(self,item_to_purchase): # call get_item() as argument  
         found=False
@@ -80,7 +81,7 @@ class ShoppingCart:
 
     def get_cost_of_cart(self) -> float:
 
-        return sum(item.item_cost for item in self.cart_items)
+        return sum(float(item.print_item_cost(print_output=False)) for item in self.cart_items)
 
     def print_total(self):
         if not self.cart_items:
@@ -179,10 +180,10 @@ def main():
     cart = ShoppingCart(customer_name,current_date)
     print_menu(cart)
     print("-" * 20)
-    print('OUTPUT SHOPPING CART')
+    print('\nOUTPUT SHOPPING CART')
     cart.print_total()
     print("-" * 20)
-    print('OUTPUT ITEMS\' DESCRIPTIONS')
+    print('\nOUTPUT ITEMS\' DESCRIPTIONS')
     cart.print_descriptions()
 
 if __name__ == "__main__": main()
