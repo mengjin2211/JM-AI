@@ -35,7 +35,7 @@ class course_DB:
         while not is_valid:
             try:
                 print('Welcome to CSU Global Course Information Database.')
-                course_num=input('Please enter a course number (in the format CSC111): ').upper()
+                course_num=input('Please enter a course number (in the format CSC111): ').strip().upper()
                 is_valid = True
                 if len(course_num)!=6:
                     print('Please enter exactly 6 characters: 3 letters of course name followed by 3 digit course number without space.')
