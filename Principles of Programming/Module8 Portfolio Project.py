@@ -1,5 +1,5 @@
 #import libraries
-from dateutil import parser
+#from dateutil import parser
 from datetime import datetime
 import pandas as pd
  
@@ -137,7 +137,7 @@ def print_menu(cart):
                 print(f'You have chosen {option}: {menuDictionary[option]}')
                 if option =='q':
                     print('Quit menu', '\nThank you for shopping with us. Have a great day!',"\U0001F6D2","\U0001F600") #add smiling emoji
-                    exit(0) #return None
+                    return None #return None
                 elif option =='a':
                     item1=get_item()
                     cart.add_item(item1)
@@ -180,38 +180,39 @@ def print_menu(cart):
 # Stand-alone functions
 def customerInfo():
     """Helper function to validate customer name and date entries. Use default date if date fails to validate."""
-    correct = 'N'
-    while correct == 'N':
-        try:
-            customer_name = input("Enter customer's name: ").strip()
-            if not customer_name:
-                raise ValueError('Name input cannot be blank.')
 
-            date_input = input("Enter today's date: ").strip()
-            if not date_input:
-                date_input=datetime.now().strftime("%B %d, %Y") 
+    try:
+        customer_name = input("Enter customer's name: ").strip()
+        if not customer_name:
+            raise ValueError('Name input cannot be blank.')
+        
+        date_input = input("Enter today's date in the format July 01, 2024: ").strip()
+        date = date_input if date_input else datetime.now().strftime("%B %d, %Y")
 
-            date = parser.parse(date_input).strftime("%B %d, %Y")
-            if pd.to_datetime(date) > datetime.now():
-                date= datetime.now().strftime("%B %d, %Y")
-                print('You have entered a date in the future. Using current date instead.') 
+        # if not date_input:
+        #     date_input=datetime.now().strftime("%B %d, %Y") 
 
-            print(f'Customer name: {customer_name}')
-            print(f'Today\'s date: {date}')
+        # date = parser.parse(date_input).strftime("%B %d, %Y")
+        # if pd.to_datetime(date) > datetime.now():
+        #     date= datetime.now().strftime("%B %d, %Y")
+        #     print('You have entered a date in the future. Using current date instead.') 
 
-            correct = input('Are the name and date correct? Y/N: ')
-            if correct.strip().upper() == 'Y':
-                return customer_name, date
-            elif correct.strip().upper() == 'N':
-                continue
-            else:
-                print("Invalid input. Please enter 'Y' or 'N'.")
-        except Exception:
-            print("An error occurred. Using current date instead.")
-            date = datetime.now().strftime("%B %d, %Y")
-            print(f'Customer name: {customer_name}')
-            print(f'Today\'s date: {date}')
-            return customer_name, date
+        print(f'Customer name: {customer_name}')
+        print(f'Customer input date: {date}')
+        return customer_name, date
+        # correct = input('Are the name and date correct? Y/N: ')
+        # if correct.strip().upper() == 'Y':
+        #     return customer_name, date
+        # elif correct.strip().upper() == 'N':
+        #     continue
+        # else:
+        #     print("Invalid input. Please enter 'Y' or 'N'.")
+    except Exception:
+        print("Using current date.")
+        date = datetime.now().strftime("%B %d, %Y")
+        print(f'Customer name: {customer_name}')
+        print(f'Today\'s date: {date}')
+        return customer_name, date
 
 def main(num_item=2): # pass parameter for different number of items.
     #step 1 see ItemToPurchase class
