@@ -2,8 +2,8 @@
 # Week1 Critical Thinking Text Editor 
 """ Text Editor 
 (1) Prompt the user to enter a string of text.  
-(2) Implement the print_menu() function to print the following command menu.  
-(3) Implement the execute_menu() function that takes 2 parameters: menu option an dthe above text.
+(2) Implement the print_menu() function to print the menu.  
+(3) Implement the execute_menu() function.
 (4) Call print_menu() and prompt for the user's choice of menu options.  
 (5) Implement the get_num_of_non_WS_characters() function that returns the number of characters in the string, excluding all whitespace.  
 (6) Implement the get_num_of_words() function.  
