@@ -1,0 +1,33 @@
+@startuml
+state Authentication {
+    [*] --> CheckPIN
+    CheckPIN --> CheckPIN: EnterPIN [incorrect] / incrementErrorCounter
+    CheckPIN --> Authenticated: [correct PIN]
+    CheckPIN --> Rejected: [error counter > limit]
+}
+
+Authenticated --> SelectOperation
+SelectOperation --> WithdrawMoney: SelectWithdraw
+
+state WithdrawMoney {
+    [*] --> CheckBalance
+    CheckBalance --> ProcessWithdrawal: [sufficient balance]
+    CheckBalance --> CloseAccount: [balance = 0]
+    ProcessWithdrawal --> DispenseCash
+    DispenseCash --> UpdateBalance
+    UpdateBalance --> [*]
+}
+
+CloseAccount --> Idle
+Rejected --> Idle
+WithdrawMoney --> Idle: Finish
+
+state Idle {
+    entry : resetErrorCounter
+    exit : authenticateCustomer
+}
+
+@enduml
+
+
+
