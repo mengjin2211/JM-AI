@@ -1,0 +1,55 @@
+@startuml
+
+skinparam rectangle {
+    BackgroundColor<<Goal>> LightBlue
+    BackgroundColor<<Tactic>> LightGrey
+}
+
+rectangle "DQAT Strategic Roadmap 2025" {
+    rectangle "Goal 1: Data Acquisition" <<Goal>> {
+        rectangle "Tactic 1.1: Data Acquisition" <<Tactic>> {
+            note right: Timeline: Q1-Q4 2025 \nTeam: Index Task Team
+        }
+        rectangle "Tactic 1.2: Index Research" <<Tactic>> {
+            note right: Timeline: Q1-Q4 2025 \nTeam: Index Research
+        }
+    }
+
+    rectangle "Goal 2: DBM/Data Organization" <<Goal>> {
+        rectangle "Tactic 2.1: Aging Resources" <<Tactic>> {
+            note right: Timeline: Q3-Q4 2025 \nTeam: DBM
+        }
+        rectangle "Tactic 2.2: Index Mapping" <<Tactic>> {
+            note right: Timeline: Q1-Q4 2024 \nTeam: Co-op
+        }
+        rectangle "Tactic 2.3: Other DBM" <<Tactic>> {
+            note right: Timeline: Q1-Q4 2024 \nTeam: DBM
+        }
+    }
+
+    rectangle "Goal 3: Data Quality Analysis" <<Goal>> {
+        rectangle "Tactic 3.1: Quality Framework" <<Tactic>> {
+            note right: Timeline: Q1-Q4 2025 \nTeam: Data Quality Analysis
+        }
+        rectangle "Tactic 3.2: DQ Analysis Projects" <<Tactic>> {
+            note right: Timeline: Q1-Q4 2025 \nTeam: Data Quality Analysis
+        }
+        rectangle "Tactic 3.3: Aging Resources" <<Tactic>> {
+            note right: Timeline: Q1-Q2 2025 \nTeam: Data Quality Analysis
+        }
+        rectangle "Tactic 3.4: Data Hygiene" <<Tactic>> {
+            note right: Timeline: Q1-Q4 2025 \nTeam: Data Quality Analysis
+        }
+    }
+
+    rectangle "Goal 4: AI & Process Review" <<Goal>> {
+        rectangle "Tactic 4.1: Collab with HDA" <<Tactic>> {
+            note right: Timeline: Q1-Q2 2025 \nTeam: TLs & DQCII
+        }
+        rectangle "Tactic 4.2: Project Atlas" <<Tactic>> {
+            note right: Timeline: Q3-Q4 2025 \nTeam: Categories
+        }
+    }
+}
+
+@end

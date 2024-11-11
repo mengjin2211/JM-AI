@@ -1,0 +1,40 @@
+@startuml
+
+title Waterfall Process
+
+class Requirements {
+    + specifyRequirements()
+    + verifyRequirements()
+}
+
+class Design {
+    + createSystemDesign()
+    + verifySystemDesign()
+}
+
+class Implementation {
+    + implementCode()
+    + unitTest()
+}
+
+class Integration {
+    + integrateComponents()
+    + systemTest()
+}
+
+class Testing {
+    + acceptanceTest()
+}
+
+class Maintenance {
+    + fixBugs()
+    + updateSystem()
+}
+
+Requirements --> Design : "Output"
+Design --> Implementation : "Output"
+Implementation --> Integration : "Output"
+Integration --> Testing : "Output"
+Testing --> Maintenance : "Feedback"
+
+@enduml

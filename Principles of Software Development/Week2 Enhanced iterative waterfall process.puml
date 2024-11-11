@@ -1,0 +1,64 @@
+@startuml
+ 
+
+skinparam class {
+    Padding 5
+    Margin 5
+    ArrowColor Black
+    ArrowThickness 1
+    FontSize 14
+}
+
+skinparam {
+    ClassAttributeIconSize 0
+    classFontSize 14
+    classFontStyle bold
+    roundcorner 15
+    lspacing 5
+    hspacing 0
+}
+
+
+title Meng Model-Enhanced Waterfall Process
+
+class Requirements {
+    + gatherRequirements()
+    + analyzeRequirements()
+    - refineRequirements()
+    + planning
+    + getFeedback()
+}
+
+class Modeling {
+    + analysis()
+    + design()
+    # prototype()
+    + getFeedback()
+}
+
+
+class Construction {
+    + code()
+    + test()
+    + iterate()
+    + riskAnalysis()
+    + getFeedback()
+}
+
+class Deployment {
+    + deploy()
+    + support()
+    + gatherFeedback()
+}
+
+Requirements --> Modeling : "Output"
+Modeling--> Construction : "Output"
+Construction --> Deployment : "Output"
+
+ 
+Deployment --> Construction : "Iterative Feedback"
+Construction --> Modeling : "Feedback"
+Modeling --> Requirements : "Feedback"
+
+Deployment ..> Requirements : "Feedback for Next Project"
+@enduml

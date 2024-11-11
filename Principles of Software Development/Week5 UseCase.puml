@@ -1,0 +1,36 @@
+@startuml
+
+actor Customer
+actor Bank_System
+actor Tech_Support
+note top of Tech_Support
+    Non-functional requirement: 24/7 tech support.
+end note
+note top of Bank_System
+    The ATM should be available 24/7.
+end note
+
+Customer --> (Card) : insert card
+
+Customer --> (Issues) : report issues
+Bank_System --> (Card) : read card
+Bank_System --> (Enter PIN) : authenticate PIN
+Bank_System --> (Enter Withdrawal Amount) : manage balance
+Bank_System --> (Obtain Cash) : dispense cash
+Tech_Support --> (Issues) : respond to issues
+
+(Card) --> (Enter PIN)
+(Enter PIN) --> (Select Transaction Type)
+(Select Transaction Type) --> (Enter Withdrawal Amount)
+(Enter Withdrawal Amount) --> (Obtain Cash)
+(Obtain Cash) --> (Receipt Option)
+(Receipt Option) --> (Print Receipt)
+(Receipt Option) --> (No Receipt)
+(Print Receipt) --> (Return Card)
+(No Receipt) --> (Return Card)
+
+
+@enduml
+
+
+

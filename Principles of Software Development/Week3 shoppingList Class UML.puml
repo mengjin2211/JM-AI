@@ -1,0 +1,27 @@
+@startuml
+!define RECTANGLE(name) rectangle name
+rectangle "User Interface" {
+    class "Home Screen" as HomeScreen
+    class "Shopping List Screen" as ShoppingListScreen
+    class "Add Item Screen" as AddItemScreen
+    class "Edit Item Screen" as EditItemScreen
+}
+
+rectangle "Data Storage" {
+    class "Local Storage" as LocalStorage
+}
+
+rectangle "Business Logic" {
+    class "Shopping List Manager" as ShoppingListManager
+}
+
+HomeScreen --> ShoppingListScreen : "View Shopping List"
+HomeScreen --> AddItemScreen : "Add Item"
+ShoppingListScreen --> EditItemScreen : "Edit Item"
+ShoppingListScreen --> ShoppingListManager : "Get List"
+AddItemScreen --> ShoppingListManager : "Add Item"
+EditItemScreen --> ShoppingListManager : "Edit Item"
+ShoppingListManager --> LocalStorage : "Save/Load List"
+
+@enduml
+

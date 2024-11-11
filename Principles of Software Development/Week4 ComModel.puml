@@ -1,0 +1,51 @@
+@startuml
+skinparam rectangle {
+    roundCorner 25
+}
+package "security" {
+
+    rectangle "Security Plicy&Training"
+    rectangle  "Monitoring & Incidence Response"
+    "Security Plicy&Training" <--> "Monitoring & Incidence Response"
+}
+
+package "OurGlobalCommunicationMedia" {
+    
+rectangle "Core Development Workflow" {
+    rectangle Slack as "Slack\n(Comms)"
+    rectangle Trello as "Trello\n(Project Mgmt)"
+    rectangle GitHub as "GitHub\n(Code)"
+    
+    Slack <--> Trello
+    Trello <--> GitHub
+    Slack <--> GitHub
+}
+
+rectangle "Tech Blogging Platforms" {
+    rectangle Medium
+    rectangle "Dev.to"
+    rectangle Kaggle
+    rectangle "Towards Data Science" 
+}
+
+rectangle "External Communication" {
+    rectangle Twitter as "Twitter\n(Feedback)"
+    rectangle LinkedIn as "LinkedIn\n(Network)"
+    rectangle Other as "Other\nSocial Media"
+}
+}
+
+"Core Development Workflow" <--> "Tech Blogging Platforms"
+note on link
+    Content Generation
+end note
+"Core Development Workflow" <--> "External Communication"
+note on link
+    Audience Engagement
+end note
+"OurGlobalCommunicationMedia" <--> "security" 
+
+note on link
+    Security Layer
+end note
+@enduml

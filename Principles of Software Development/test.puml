@@ -1,0 +1,44 @@
+@startuml
+
+[*] --> Idle
+
+state Idle {
+  [*] --> Idle
+  Idle --> CardInserted : InsertCard / None
+}
+
+state CardInserted {
+  [*] --> CardInserted
+  CardInserted --> Authenticating : EnterPin / None
+}
+
+state Authenticating {
+  [*] --> Authenticating
+  Authenticating --> Authenticated : CheckPin [Correct PIN] / Reset error counter
+  Authenticating --> Authenticating : CheckPin [Incorrect PIN] / Increment error counter
+  Authenticating --> Rejected : CheckPin [Incorrect PIN and error counter > limit] / None
+}
+
+state Authenticated {
+  [*] --> Authenticated
+  Authenticated --> Withdrawing : WithdrawMoney [Balance > 0] / Deduct amount from balance
+  Authenticated --> AccountClosed : WithdrawMoney [Balance = 0] / Close account
+}
+
+state Withdrawing {
+  [*] --> Withdrawing
+  Withdrawing --> Idle : TransactionComplete / Eject card
+}
+
+state AccountClosed {
+  [*] --> AccountClosed
+  AccountClosed --> Idle : TransactionComplete / Eject card
+}
+
+state Rejected {
+  [*] --> Rejected
+  Rejected --> Idle : TransactionComplete / Eject card
+}
+
+@enduml
+

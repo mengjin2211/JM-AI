@@ -1,0 +1,28 @@
+@startuml
+actor Citizen
+actor PublicWorksDepartment
+actor RepairCrew
+
+usecase "Report Pothole" as UC1
+usecase "View Pothole Status" as UC2
+usecase "Assign Work Order" as UC3
+usecase "Update Work Order" as UC4
+usecase "Report Damage" as UC5
+usecase "View Damage Report" as UC6
+
+Citizen --> UC1 : Reports pothole location and severity
+Citizen --> UC2 : Checks status of reported pothole
+Citizen --> UC5 : Reports damage due to pothole
+Citizen --> UC6 : Views reported damage
+
+PublicWorksDepartment --> UC3 : Assigns work order to repair crew
+PublicWorksDepartment --> UC4 : Updates work order status
+
+RepairCrew --> UC4 : Updates work order with repair details
+
+UC1 --> UC3 : Pothole reported triggers work order assignment
+UC3 --> UC4 : Work order assigned triggers updates
+UC5 --> UC6 : Damage reported triggers viewing
+
+@enduml
+

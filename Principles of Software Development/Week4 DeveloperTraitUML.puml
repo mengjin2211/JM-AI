@@ -1,0 +1,42 @@
+@startuml
+
+title Common Personality Traits for Excellent Software Developers
+ 
+
+class TraitBuilder  {
+    + team_work()  
+    + attention_to_detail()  
+    + resilience_under_pressure()   
+}
+
+class DeveloperTraitBuilder {
+    - trait : SoftwareEngineerTrait
+    + team_work() : DeveloperTraitBuilder
+    + attention_to_detail() : DeveloperTraitBuilder
+    + resilience_under_pressure() : DeveloperTraitBuilder
+    + get_result() : SoftwareEngineerTrait
+}
+
+class SoftwareEngineerTrait {
+    - traits  
+}
+
+class TraitDirector {
+    + construct() : SoftwareEngineerTrait
+}
+
+TraitBuilder <|-- DeveloperTraitBuilder: Interface Implementation
+DeveloperTraitBuilder ..>  SoftwareEngineerTrait: Instantiate 
+TraitDirector o-- DeveloperTraitBuilder: Aggregation
+note left of TraitDirector
+  The Director class orchestrates
+  the construction process using
+  the Builder interface.
+end note
+
+note right of DeveloperTraitBuilder
+  Implementing the Builder interface.
+end note
+
+
+@enduml

@@ -1,0 +1,58 @@
+@startuml
+top to bottom direction
+ 
+skinparam componentStyle rectangle
+skinparam linetype ortho
+skinparam defaultFontName Arial
+skinparam component {
+    BackgroundColor<<Database>> LightGray
+    BackgroundColor<<Manager>> LightBlue
+    BackgroundColor<<UI>> PaleTurquoise
+    BorderColor Black
+    ArrowColor Black
+    ArrowThickness 2
+}
+ 
+package "Mobile Shopping List App" {
+
+    component "User Interface" <<UI>> {
+        [Main Screen] --> [Shopping List Screen]        
+        [Shopping List Screen] --> [Create List Screen]
+        [Shopping List Screen] --> [Edit List Screen]
+        [Shopping List Screen] --> [View List Screen]
+        [Edit List Screen] --> [Edit Item Screen]
+        [Edit List Screen] --> [Add Item Screen]
+        [Edit List Screen] --> [Delete Item Screen]
+    }
+ 
+    component "Shopping List Manager" <<Manager>>{
+        [Create List]  
+        [Edit List]  
+        [View List]  
+        [Remove List] 
+    }
+
+    component "Item Manager"<<Manager>> {
+        [Create Item]  
+        [Edit Item]  
+        [View Item]  
+        [Remove Item] 
+    }
+
+    component "Database" <<Database>>{
+        [UserTable] "1" --> "0..*" [ShoppingListTable]
+        [ShoppingListTable] "1" --> "0..*" [ItemTable]
+    }
+    
+    [User Interface] --> [Shopping List Manager]: "Shopping List Manipulation"
+    [User Interface] --> [Item Manager]:"Item Manipulation"
+ 
+    [Shopping List Manager] --> [Database]: "CRUD Operation"
+    [Item Manager] --> [Database]: "CRUD Operation"
+ 
+
+ 
+    
+}
+
+@enduml

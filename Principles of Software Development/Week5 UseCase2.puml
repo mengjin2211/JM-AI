@@ -1,0 +1,39 @@
+@startuml
+actor "Tech Support" as TS
+actor "Bank System" as BS
+actor Customer as C
+
+' Tech Support actions
+TS --> (Respond to Issues)
+TS --> (Card Retrieval Failure)
+TS --> (Transaction Error)
+
+' Bank System actions
+BS --> (Read Card)
+BS --> (Authenticate PIN)
+BS --> (Manage Balance)
+BS --> (Dispense Cash)
+
+' Customer actions
+C --> (Report Issues)
+C --> (PIN Entry Security)
+C --> (Confirm Transaction Details)
+C --> (Return Card)
+C --> (Print Receipt)
+C --> (Obtain Cash)
+C --> (Enter Withdrawal Amount)
+C --> (Select Transaction Type)
+C --> (Enter PIN)
+C --> (Insert Card)
+
+' Linking actions with dashed lines
+(Insert Card) ..> (Read Card)
+(Enter PIN) ..> (Authenticate PIN)
+(Enter Withdrawal Amount) ..> (Manage Balance)
+(Manage Balance) ..> (Dispense Cash)
+(Dispense Cash) ..> (Obtain Cash)
+(Report Issues) ..> (Respond to Issues)
+(Card Retrieval Failure) ..> (Return Card)
+(Transaction Error) ..> (Confirm Transaction Details)
+
+@enduml

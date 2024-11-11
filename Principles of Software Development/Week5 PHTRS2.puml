@@ -1,0 +1,29 @@
+@startuml
+actor Citizen
+actor "PWD Employee" as PWD
+actor "Repair Crew" as RC
+
+usecase "Report Pothole" as UC1
+usecase "View Pothole Status" as UC2
+usecase "Manage Pothole Repairs" as UC3
+usecase "Assign Repair Crew" as UC4
+usecase "Update Repair Status" as UC5
+usecase "Report Damage" as UC6
+usecase "Generate Work Order" as UC7
+
+Citizen --> UC1
+Citizen --> UC2
+Citizen --> UC6
+
+PWD --> UC3
+PWD --> UC4
+PWD --> UC7
+
+RC --> UC5
+RC --> UC7
+
+UC1 --> UC3
+UC5 --> UC2
+UC4 --> UC7
+
+@enduml
