@@ -1,5 +1,5 @@
 """Linear Search Online Marketplace Systems 
-    1) Simulate connection to postgres database using retrieve_data(), existing with a manually created items list.
+    1) Simulate connection to postgres database using retrieve_data() but exist with a manually created items list. 
     2) define_criteria() gives user flexibility to choose customized keywords to search the marketplace. If no keyword is provided, then default None.
     3) linear_search() searches through all items in the marketplace for perfect match or partial match, appending results to two arrays.
     4) print_items() prints the search result.
