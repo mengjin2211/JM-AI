@@ -1,0 +1,93 @@
+
+import random
+import string
+from datetime import datetime, timedelta
+import time 
+base=256
+prime=211
+
+def hash(string):
+    length=len(string)
+    hash_value=0
+    for i in range(length):
+        hash_value = (hash_value * base + ord(string[i])) % prime
+    return hash_value
+
+def rabin_karp(text, pattern):
+    m=len(pattern)
+    n=len(text)
+    h=1
+    matches=[]
+    if m>n:
+        return []
+    
+    #for _ in range(m - 1):
+    #    h = (h * base) % prime  
+    pattern_hash = hash(pattern)
+    text_hash =  hash(text[:m])
+    
+    for i in range(n -m+ 1): 
+        if pattern_hash == text_hash:
+            if text[i:i+m] == pattern:
+                matches.append(i)
+        
+        if i < n-m:
+            next_substring = text[i+1:i+m+1]
+            text_hash = hash(next_substring)    
+            #text_hash = (text_hash - ord(text[i]) * h) * base + ord(text[i + m]) % prime # Rolling hash calculation
+        if text_hash < 0:   
+            text_hash += prime
+
+    return matches
+
+def brute_force_search(text, pattern):
+    brute_force_matches = []
+    for i in range(len(text) - len(pattern) + 1):
+        if text[i:i + len(pattern)] == pattern:
+            brute_force_matches.append(i)
+    return brute_force_matches
+
+def validation(text, pattern):
+    rabin_karp_result = rabin_karp(text, pattern)
+    brute_force_result=brute_force_search(text, pattern)
+    if rabin_karp_result==brute_force_result:
+        print ('rabin_karp_result validated')
+    else: print (f'rabin_karp_result is different from brute force: rk {rabin_karp_result}; bf {brute_force_result}' )
+
+def time_complexity(algorithm, num_iteration):
+    time_complexity=[]
+    for i in range (num_iteration):
+        start_time = time.time()
+        algorithm
+        end_time = time.time()
+        time_complexity.append(end_time - start_time)
+    total_time = sum(time_complexity) 
+    return total_time
+
+def print_result(result):
+    if result:
+        print(f"Pattern found at indices: {result}")
+    else:
+        print("Pattern not found")
+
+def random_text(length):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+def main():
+    text =random_text(50000)
+    pattern= random_text(2)
+    print(f'pattern is {pattern}, /ntext is{text}')   
+    validation(text, pattern)
+    rk_result=rabin_karp(text, pattern)
+    print ('rabin_karp_result')
+    print_result(rk_result)
+    bf_result=brute_force_search(text, pattern)
+    print ('brute_force_result')
+    print_result(bf_result)
+    #time comparison
+    print (f'rabin_karp total time is {time_complexity(rk_result,5000)}')
+    print (f'brute_force total time is {time_complexity(bf_result,5000)}') 
+
+if __name__ == "__main__":
+    main()
+
