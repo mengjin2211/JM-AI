@@ -21,8 +21,8 @@ def rabin_karp(text, pattern):
     if m>n:
         return []
     
-    #for _ in range(m - 1):
-    #    h = (h * base) % prime  
+    for _ in range(m - 1):
+        h = (h * base) % prime  
     pattern_hash = hash(pattern)
     text_hash =  hash(text[:m])
     
@@ -32,9 +32,9 @@ def rabin_karp(text, pattern):
                 matches.append(i)
         
         if i < n-m:
-            next_substring = text[i+1:i+m+1]
-            text_hash = hash(next_substring)    
-            #text_hash = (text_hash - ord(text[i]) * h) * base + ord(text[i + m]) % prime # Rolling hash calculation
+            #next_substring = text[i+1:i+m+1]
+            #text_hash = hash(next_substring)    
+            text_hash = ((text_hash - ord(text[i]) * h) * base + ord(text[i + m])) % prime # Rolling hash calculation
         if text_hash < 0:   
             text_hash += prime
 
@@ -74,19 +74,22 @@ def random_text(length):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 def main():
-    text =random_text(50000)
-    pattern= random_text(2)
-    print(f'pattern is {pattern}, /ntext is{text}')   
-    validation(text, pattern)
+    text =random_text(1000)
+    pattern= random_text(1)
+    print(f'text length is {len(text)}, pattern length is {len(pattern)}')   
+    
+    # validation and printing
     rk_result=rabin_karp(text, pattern)
-    print ('rabin_karp_result')
+    print ('Rabin Karp Result:')
     print_result(rk_result)
     bf_result=brute_force_search(text, pattern)
-    print ('brute_force_result')
+    print ('Brute Force Result:')
     print_result(bf_result)
+    validation(text, pattern)
+
     #time comparison
-    print (f'rabin_karp total time is {time_complexity(rk_result,5000)}')
-    print (f'brute_force total time is {time_complexity(bf_result,5000)}') 
+    print (f'rabin_karp total time is {time_complexity(rk_result,50000)}')
+    print (f'brute_force total time is {time_complexity(bf_result,50000)}') 
 
 if __name__ == "__main__":
     main()
