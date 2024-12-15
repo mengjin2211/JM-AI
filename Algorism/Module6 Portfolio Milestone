@@ -1,0 +1,163 @@
+
+import random
+import string
+from datetime import datetime, timedelta
+import time 
+import sys
+import cProfile
+from concurrent.futures import ThreadPoolExecutor
+base=256
+prime=211
+
+def hash(string):
+    length=len(string)
+    hash_value=0
+    for i in range(length):
+        hash_value = (hash_value * base + ord(string[i])) % prime
+    return hash_value
+
+def rabin_karp_simplified(text, pattern): 
+    m, n = len(pattern), len(text)
+
+    if m > n:
+        return []
+    matches = []
+    pattern_hash = hash(pattern)
+
+    for i in range(n - m + 1):
+        if hash(text[i:i+m]) == pattern_hash:
+            if text[i:i+m] == pattern:
+                matches.append(i)
+    return matches
+
+def rabin_karp(text, pattern): 
+    m = len(pattern)
+    n = len(text)
+    if m > n:
+        return []
+    pattern_hash = 0
+    text_hash = 0
+    h = 1  # h = pow(base, m-1) % prime
+    for i in range(m - 1):
+        h = (h * base) % prime
+
+    for i in range(m):
+        pattern_hash = (base * pattern_hash + ord(pattern[i])) % prime
+        text_hash = (base * text_hash + ord(text[i])) % prime
+
+    matches = []
+    for i in range(n - m + 1):
+        if pattern_hash == text_hash:
+            if text[i:i + m] == pattern:
+                matches.append(i)
+ 
+        if i < n - m:
+            text_hash = (base * (text_hash - ord(text[i]) * h) + ord(text[i + m])) % prime
+            if text_hash < 0:
+                text_hash += prime
+
+    return matches
+
+def brute_force_search(text, pattern):
+    brute_force_matches = []
+    for i in range(len(text) - len(pattern) + 1):
+        if text[i:i + len(pattern)] == pattern:
+            brute_force_matches.append(i)
+    return brute_force_matches
+
+def validation(text, pattern):
+    rabin_karp_result = rabin_karp(text, pattern)
+    brute_force_result=brute_force_search(text, pattern)
+    if rabin_karp_result==brute_force_result:
+        print ('rabin_karp_result validated')
+    else: print (f'rabin_karp_result is different from brute force: rk {rabin_karp_result}; bf {brute_force_result}' )
+
+def time_space_complexity(algorithm, text, pattern, num_iteration=50):
+    time_complexity=[]
+    total_size = 0 
+    for i in range (num_iteration):
+        start_time = time.time()
+        result=algorithm(text, pattern)
+        end_time = time.time()
+        time_complexity.append(end_time - start_time)
+        total_size += sys.getsizeof(result) + sys.getsizeof(text) + sys.getsizeof(pattern)
+    avg_time = sum(time_complexity)  / num_iteration
+    avg_space = total_size / num_iteration
+    return avg_time, avg_space
+
+def print_result(result):
+    if result:
+        print(f"Pattern found at indices: {result}")
+    else:
+        print("Pattern not found")
+
+def random_text(length):
+    text = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    return text
+
+import matplotlib.pyplot as plt
+
+
+def visualize_time_complexity(text_lengths, rabin_karp_times, rabin_karp_simplified_times, brute_force_times):
+    plt.figure(figsize=(10, 6))
+ 
+    # Plotting original Rabin-Karp time
+    plt.plot(text_lengths, rabin_karp_times, label='Rabin-Karp Time', marker='o', color='b')
+    
+    # Plotting simplified Rabin-Karp time
+    plt.plot(text_lengths, rabin_karp_simplified_times, label='Simplified Rabin-Karp Time', marker='o', color='g')
+    
+    # Plotting brute force time
+    plt.plot(text_lengths, brute_force_times, label='Brute Force Time', marker='o', color='r')
+    
+    plt.xlabel('Text Length')
+    plt.ylabel('Time (seconds)')
+    plt.title('Time Complexity of Rabin-Karp vs Brute Force')
+ 
+    # Set logarithmic scale for both axes
+    plt.xscale('log')
+    plt.yscale('log')
+    
+    # Display the legend to show all three labels
+    plt.legend()
+ 
+    # Show grid and adjust layout
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.tight_layout()
+    
+    # Show the plot
+    plt.show()
+def main():
+    # text =random_text(3000)
+    # pattern= random_text(3)  
+    # validation(text, pattern) # This is only needed for initial checks.  
+    rabin_karp_simplified_times = []
+    rabin_karp_times = []
+    brute_force_times = []
+    print(f"{'Text Length':<15}{'Pattern Length':<15}{'RK Simplified Time':<20}{'Rabin-Karp Time':<20}{'Brute Force Time':<20}{'Rabin-Karp Space':<20}{'Brute Force Space':<20}")
+    print("-" * 100) 
+    text_len = [100, 1000, 10000, 100000, 1000000]
+    for text_length in  text_len:
+        pattern =random_text(20)
+        pattern_length = len(pattern)
+        text = random_text(text_length)        
+    # Ensure the pattern is embedded in the text at a random position
+        insert_position = random.randint(0, len(text) - pattern_length)
+        text_with_pattern = text[:insert_position] + pattern + text[insert_position:]
+        
+        num_iterations=10
+        rk_time_simplified, _= time_space_complexity(rabin_karp_simplified, text, pattern, num_iterations)
+        rk_time, rk_space= time_space_complexity(rabin_karp, text, pattern, num_iterations) 
+        bf_time,bf_space = time_space_complexity(brute_force_search, text, pattern, num_iterations)
+        
+        print(f"{text_length:<15}{pattern_length:<15}{rk_time_simplified:<20.6f}{rk_time:<20.6f}{bf_time:<20.6f}{rk_space:<20.2f}{bf_space:<20.2f}")
+
+        rabin_karp_simplified_times.append(rk_time_simplified)
+        rabin_karp_times.append(rk_time)
+        brute_force_times.append(bf_time) 
+    
+    visualize_time_complexity(text_len, rabin_karp_times,rabin_karp_simplified_times,brute_force_times)
+
+if __name__ == "__main__":
+    main()
+
