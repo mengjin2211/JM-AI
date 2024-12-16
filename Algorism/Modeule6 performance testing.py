@@ -3,6 +3,7 @@ import string
 import timeit
 import statistics
 from concurrent.futures import ThreadPoolExecutor
+import matplotlib.pyplot as plt
 base = 256
 prime = 211
 
@@ -12,6 +13,34 @@ def brute_force_search(text, pattern):
         if text[i:i + len(pattern)] == pattern:
             brute_force_matches.append(i)
     return brute_force_matches
+
+def rabin_karp(text, pattern): 
+    m = len(pattern)
+    n = len(text)
+    if m > n:
+        return []
+    pattern_hash = 0
+    text_hash = 0
+    h = 1  # h = pow(base, m-1) % prime
+    for i in range(m - 1):
+        h = (h * base) % prime
+
+    for i in range(m):
+        pattern_hash = (base * pattern_hash + ord(pattern[i])) % prime
+        text_hash = (base * text_hash + ord(text[i])) % prime
+
+    matches = []
+    for i in range(n - m + 1):
+        if pattern_hash == text_hash:
+            if text[i:i + m] == pattern:
+                matches.append(i)
+ 
+        if i < n - m:
+            text_hash = (base * (text_hash - ord(text[i]) * h) + ord(text[i + m])) % prime
+            if text_hash < 0:
+                text_hash += prime
+
+    return matches
 
 def rabin_karp1(text, pattern):
     m, n = len(pattern), len(text)
@@ -44,7 +73,7 @@ def rabin_karp1(text, pattern):
 
     return matches
 
-def alternative_rabin_karp(text, pattern):
+def simplified_rabin_karp(text, pattern):
     m, n = len(pattern), len(text)
 
     if m > n:
@@ -67,13 +96,13 @@ def rabin_karp2(text, pattern):
     def compute_rolling_hash(s, length):
         h = 0
         for i in range(length):
-            h = (h * BASE + ord(s[i])) & 0xFFFFFFFF
+            h = (h * base + ord(s[i])) & 0xFFFFFFFF
         return h
 
     pattern_hash = compute_rolling_hash(pattern, m)
     text_window_hash = compute_rolling_hash(text, m)
 
-    highest_power = pow(BASE, m - 1, PRIME)
+    highest_power = pow(base, m - 1, prime)
 
     matches = []
 
@@ -84,7 +113,7 @@ def rabin_karp2(text, pattern):
 
         if i < n - m:
             text_window_hash = (
-                (text_window_hash * BASE -
+                (text_window_hash * base -
                  ord(text[i]) * highest_power +
                  ord(text[i + m]))
                 & 0xFFFFFFFF
@@ -182,39 +211,56 @@ def detailed_performance_analysis():
         return ''.join(text[:length]), pattern
 
     scenarios = [
-        (1_000, 0.001, 5),      # Very short text
+        (1_000, 0.001, 5),       # Very short text
         (10_000, 0.01, 10),      # Short text
         (100_000, 0.1, 15),      # Medium text
         (1_000_000, 0.001, 20),  # Large text
         (10_000_000, 0.001, 50)  # Very large text
     ]
-    print(f"{scenarios}") 
-    print(f"{'Algorithm':^15} | {'Mean Time':^12} | {'Median Time':^12}")
+
+    algorithms = [
+        ("Brute Force", brute_force_search),
+        ("Simplified Rabin-Karp", simplified_rabin_karp),
+        ("Rabin-Karp", rabin_karp),
+        ("Rabin-Karp1", rabin_karp1),
+        ("Rabin-Karp2", rabin_karp2),
+        ("Rabin-Karp3", rabin_karp3),
+        ("Rabin-Karp_parallel", rabin_karp_parallel)
+    ]
+
+    print(f"{'Algorithm':^20} | {'Mean Time':^12} | {'Median Time':^12}")
     print("-" * 70)
+
+    results = {name: [] for name, _ in algorithms}
 
     for length, freq, pat_len in scenarios:
         text, pattern = generate_text(length, freq, pat_len)
-
-        algorithms = [
-            ("Brute Force", brute_force_search),
-            ("Alternative Rabin-Karp", alternative_rabin_karp),
-            ("Rabin-Karp1", rabin_karp1),
-            ("Rabin-Karp2", rabin_karp2)  ,
-            ("Rabin-Karp3", rabin_karp3) ,
-            ("Rabin-Karp_parallel",rabin_karp_parallel )
-        ]
-
         print(f"Text Length: {length}, Pattern Freq: {freq}, Pattern Len: {pat_len}")
 
         for name, algo in algorithms:
             times = timeit.repeat(lambda: algo(text, pattern), number=1, repeat=10)
 
             mean_time = statistics.mean(times)
-            median_time = statistics.median(times)
+            results[name].append(mean_time)
 
-            print(f"{name:20} | {mean_time:12.6f} | {median_time:12.6f}")
+            print(f"{name:20} | {mean_time:12.6f} | {statistics.median(times):12.6f}")
 
         print("\n")
+
+    # Plotting the results
+    plt.figure(figsize=(12, 8))
+    for name, times in results.items():
+        plt.plot([scenario[0] for scenario in scenarios], times, label=name)
+
+    plt.xlabel('Text Length')
+    plt.ylabel('Mean Time (s)')
+    plt.title('Performance Analysis of Different Algorithms')
+    plt.legend()
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.grid(True)
+    plt.show()
+
 
 detailed_performance_analysis()
 
