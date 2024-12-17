@@ -1,9 +1,12 @@
+
 import random
 import string
 import timeit
 import statistics
 from concurrent.futures import ThreadPoolExecutor
 import matplotlib.pyplot as plt
+import time 
+import sys
 base = 256
 prime = 211
 
@@ -41,26 +44,21 @@ def rabin_karp(text, pattern):
                 text_hash += prime
 
     return matches
-
+#with the help of ChatGPT and Claude3
 def rabin_karp1(text, pattern):
     m, n = len(pattern), len(text)
 
     if m > n:
         return []
-
     base_power = pow(base, m - 1, prime)
-
     def compute_hash(s, length):
         h = 0
         for i in range(length):
             h = (h * base + ord(s[i])) % prime
         return h
-
     pattern_hash = compute_hash(pattern, m)
     text_hash = compute_hash(text, m)
-
     matches = []
-
     for i in range(n - m + 1):
         if pattern_hash == text_hash and text[i:i+m] == pattern:
             matches.append(i)
@@ -87,7 +85,7 @@ def simplified_rabin_karp(text, pattern):
                 matches.append(i)
 
     return matches
-
+#with the help of ChatGPT and Claude3
 def rabin_karp2(text, pattern):
     m, n = len(pattern), len(text)
 
@@ -121,40 +119,11 @@ def rabin_karp2(text, pattern):
 
     return matches
 
-def rabin_karp3(text, pattern): 
-    m = len(pattern)
-    n = len(text)
-    if m > n:
-        return []
-    pattern_hash = 0
-    text_hash = 0
-    h = 1  # h = pow(base, m-1) % prime
-    for i in range(m - 1):
-        h = (h * base) % prime
-
-    for i in range(m):
-        pattern_hash = (base * pattern_hash + ord(pattern[i])) % prime
-        text_hash = (base * text_hash + ord(text[i])) % prime
-
-    matches = []
-    for i in range(n - m + 1):
-        if pattern_hash == text_hash:
-            if text[i:i + m] == pattern:
-                matches.append(i)
- 
-        if i < n - m:
-            text_hash = (base * (text_hash - ord(text[i]) * h) + ord(text[i + m])) % prime
-            if text_hash < 0:
-                text_hash += prime
-
-    return matches
-
+#with the help of ChatGPT and Claude3
 def rabin_karp_parallel(text, pattern):
     num_chunks = 4  # Number of chunks
     text_length = len(text)
     pattern_length = len(pattern)
-
-    # Ensure chunk_size is at least 1
     chunk_size = max(1, text_length // num_chunks)
     results = []
 
@@ -193,7 +162,39 @@ def rabin_karp_parallel(text, pattern):
 
     return sorted(set(results))
 
-def detailed_performance_analysis():
+def time_space_complexity(algorithm, text, pattern, num_iteration=50):
+    time_complexity=[]
+    total_size = 0 
+    for i in range (num_iteration):
+        start_time = time.time()
+        result=algorithm(text, pattern)
+        end_time = time.time()
+        time_complexity.append(end_time - start_time)
+        total_size += sys.getsizeof(result) + sys.getsizeof(text) + sys.getsizeof(pattern)
+    avg_time = sum(time_complexity)  / num_iteration
+    avg_space = total_size / num_iteration
+    return avg_time, avg_space
+
+def visualize_time_complexity(text_lengths, rabin_karp_simplified_times,rabin_karp_times,brute_force_times, rk1_times, rk2_times,rk_paras):
+    plt.figure(figsize=(10, 6))
+    plt.plot(text_lengths, rabin_karp_simplified_times, label='Simplified Rabin-Karp Time', marker='o', color='g')
+    plt.plot(text_lengths, rabin_karp_times, label='Rabin-Karp Time', marker='o', color='b')    
+    plt.plot(text_lengths, brute_force_times, label='Brute Force Time', marker='o', color='r')
+    plt.plot(text_lengths, rk1_times, label='Rabin-Karp2 Time', marker='o', color='m')
+    plt.plot(text_lengths, rk2_times, label='Rabin-Karp3 Time', marker='o', color='y')
+    plt.plot(text_lengths, rk_paras, label='Rabin-Karp Parallel Time', marker='o', color='c')
+    plt.xlabel('Text Length')
+    plt.ylabel('Time (seconds)')
+    plt.title('Model Time Comparison')
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.legend()
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.tight_layout()
+
+    plt.show()
+
+def test():
     def generate_text(length, pattern_frequency=0.01, pattern_length=10):
         text = []
         characters = string.ascii_uppercase
@@ -209,58 +210,49 @@ def detailed_performance_analysis():
                 i += 1
 
         return ''.join(text[:length]), pattern
+     
+    rabin_karp_simplified_times = []
+    rabin_karp_times = []
+    brute_force_times = []
+    print(f"{'TextLen':<10}{'PatternLen':<15}{'RK Simplified':<15}{'RK':<10}{'BF':<10}{'RK1':<10}{'RK2':<10}{'RK_par':<10}{'min':<10}")
+    print("-" * 150) 
+    text_len = [1000, 10000, 100000, 1000000, 10000000]
+    frequency=[0.001, 0.01, 0.1,   0.001, 0.001] 
+    pattern_len=[5,   10,    15,  20,   50]
+    rk_simple_times=[]
+    rk_times=[]
+    bf_times=[]
+    rk1_times=[]
+    rk2_times=[]
+    rk_paras=[]
+    for text_length, freq, pattern_length in zip(text_len, frequency, pattern_len):
+        text, pattern = generate_text(text_length, freq, pattern_length)            
+        num_iterations=20
+        rk_time_simplified, _= time_space_complexity(simplified_rabin_karp, text, pattern, num_iterations)
+        rk_time, _= time_space_complexity(rabin_karp, text, pattern, num_iterations) 
+        bf_time,_ = time_space_complexity(brute_force_search, text, pattern, num_iterations)
+        rk1_time, _= time_space_complexity(rabin_karp1, text, pattern, num_iterations) 
+        rk2_time, _= time_space_complexity(rabin_karp2, text, pattern, num_iterations)  
+        rk_para, _= time_space_complexity(rabin_karp_parallel, text, pattern, num_iterations) 
+        time_dict = {
+        'rk_time_simplified': rk_time_simplified,
+        'rk_time': rk_time,
+        'bf_time': bf_time,
+        'rk1_time': rk1_time,
+        'rk2_time': rk2_time,
+        'rk_para': rk_para}
+        min_var = min(time_dict, key=time_dict.get)
+        print(f"{text_length:<10}{pattern_length:<15}{rk_time_simplified:<15.6f}{rk_time:<10.6f}{bf_time:<10.6f}{rk1_time:<10.6f}{rk2_time:<10.6f}{rk_para:<10.6f}{min_var:<10}")
+        rk_simple_times.append(rk_time_simplified)
+        rk_times.append(rk_time)
+        bf_times.append(bf_time) 
+        rk1_times.append(rk1_time)
+        rk2_times.append(rk2_time)
+        rk_paras.append(rk_para)
+    
+    visualize_time_complexity(text_len, rk_simple_times,rk_times,bf_times, rk1_times, rk2_times,rk_paras)
+    
+if __name__ == "__main__":
+    test()
 
-    scenarios = [
-        (1_000, 0.001, 5),       # Very short text
-        (10_000, 0.01, 10),      # Short text
-        (100_000, 0.1, 15),      # Medium text
-        (1_000_000, 0.001, 20),  # Large text
-        (10_000_000, 0.001, 50)  # Very large text
-    ]
-
-    algorithms = [
-        ("Brute Force", brute_force_search),
-        ("Simplified Rabin-Karp", simplified_rabin_karp),
-        ("Rabin-Karp", rabin_karp),
-        ("Rabin-Karp1", rabin_karp1),
-        ("Rabin-Karp2", rabin_karp2),
-        ("Rabin-Karp3", rabin_karp3),
-        ("Rabin-Karp_parallel", rabin_karp_parallel)
-    ]
-
-    print(f"{'Algorithm':^20} | {'Mean Time':^12} | {'Median Time':^12}")
-    print("-" * 70)
-
-    results = {name: [] for name, _ in algorithms}
-
-    for length, freq, pat_len in scenarios:
-        text, pattern = generate_text(length, freq, pat_len)
-        print(f"Text Length: {length}, Pattern Freq: {freq}, Pattern Len: {pat_len}")
-
-        for name, algo in algorithms:
-            times = timeit.repeat(lambda: algo(text, pattern), number=1, repeat=10)
-
-            mean_time = statistics.mean(times)
-            results[name].append(mean_time)
-
-            print(f"{name:20} | {mean_time:12.6f} | {statistics.median(times):12.6f}")
-
-        print("\n")
-
-    # Plotting the results
-    plt.figure(figsize=(12, 8))
-    for name, times in results.items():
-        plt.plot([scenario[0] for scenario in scenarios], times, label=name)
-
-    plt.xlabel('Text Length')
-    plt.ylabel('Mean Time (s)')
-    plt.title('Performance Analysis of Different Algorithms')
-    plt.legend()
-    plt.xscale('log')
-    plt.yscale('log')
-    plt.grid(True)
-    plt.show()
-
-
-detailed_performance_analysis()
 
