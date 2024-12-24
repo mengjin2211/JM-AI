@@ -1,6 +1,5 @@
 import heapq
-import matplotlib.pyplot as plt
-import networkx as nx
+ 
 class Graph:
     def __init__(self):
         self.nodes=set()
