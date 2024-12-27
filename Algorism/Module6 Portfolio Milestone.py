@@ -162,6 +162,7 @@ def main():
     visualize_time_complexity(text_len, rabin_karp_times,rabin_karp_simplified_times,brute_force_times)
     visualize_space_complexity(text_len, rk_spaces, rk_simiplified_spaces, bf_spaces )
 
+
 if __name__ == "__main__":
     main()
 
