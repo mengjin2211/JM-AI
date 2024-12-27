@@ -24,12 +24,12 @@ class Graph:
 
 def create_graph():
     g = Graph()
-    nodes = ['PostOffice', 'PlaceA', 'PlaceB', 'PlaceC', 'PlaceD', 'PlaceE', 'PlaceF']
+    nodes = ['Food_Pickup_Location', 'PlaceA', 'PlaceB', 'PlaceC', 'PlaceD', 'PlaceE', 'PlaceF']
     for node in nodes:
         g.add_node(node)
     edges = [
-        ('PostOffice', 'PlaceA', 25),
-        ('PostOffice', 'PlaceB', 17),
+        ('Food_Pickup_Location', 'PlaceA', 25),
+        ('Food_Pickup_Location', 'PlaceB', 17),
         ('PlaceA', 'PlaceC', 30),
         ('PlaceB', 'PlaceD', 18),
         ('PlaceC', 'PlaceE', 9),
@@ -40,14 +40,14 @@ def create_graph():
     #print (f'Print Graph: {g}')
     return g
 
-def dijkstra(graph, start='PostOffice'):
+def dijkstra(graph, start='Food_Pickup_Location'):
     pq = [(0, start)]
     #example structure [(5, 'PlaceA'), (7, 'PlaceB')] current_node with smallest distance popped first.
     distances = {node: float('inf') for node in graph.nodes} 
     # for unweighted graphs where there is no distance, visited should be checked. Courier case is weighted. 
     distances[start] = 0
     #keeps track of the shortest known distance from the starting node to each node
-    #{'PostOffice': 0, 'PlaceA': 5, 'PlaceB': 7, ...}
+    #{'Food_Pickup_Location': 0, 'PlaceA': 5, 'PlaceB': 7, ...}
     previous_nodes = {node: None for node in graph.nodes}
     #track our route
     while pq:
