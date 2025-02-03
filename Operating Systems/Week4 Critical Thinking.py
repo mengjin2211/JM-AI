@@ -26,7 +26,6 @@ def best_fit(memory_blocks, process_sizes):
         if best_idx != -1:
             allocation[i] = best_idx
             memory_blocks[best_idx] -= process_sizes[i]
-
                 
     return allocation, memory_blocks 
  
@@ -43,7 +42,7 @@ def display_outcome (allocation, remaining_memo):
 
 if __name__ == "__main__":
     memory = [100, 700, 200, 300, 600, 400]
-    process = [220, 417, 112, 601, 50, 8]
+    process = [220, 417, 112, 601, 50]
 
     allocation, remaining_memo = first_fit(memory.copy(), process)
     print('First_Fit Algorithm')
