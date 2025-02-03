@@ -1,4 +1,6 @@
 
+#Week4 Critical Thinking Comparing First_Fit and Best_Fit Algorithms
+
 def first_fit(memory_blocks, process_sizes):
     allocation = [-1] * len(process_sizes)    
     for i in range(len(process_sizes)):
@@ -10,6 +12,24 @@ def first_fit(memory_blocks, process_sizes):
                 
     return allocation, memory_blocks 
 
+def best_fit(memory_blocks, process_sizes):
+    allocation = [-1] * len(process_sizes)    
+    for i in range(len(process_sizes)):
+        best_idx = -1
+        min_size = float('inf')
+        for j in range(len(memory_blocks)):
+            if memory_blocks[j] >= process_sizes[i]:
+                if memory_blocks[j] < min_size:
+                    min_size = memory_blocks[j]
+                    best_idx = j
+
+        if best_idx != -1:
+            allocation[i] = best_idx
+            memory_blocks[best_idx] -= process_sizes[i]
+
+                
+    return allocation, memory_blocks 
+ 
 def display_outcome (allocation, remaining_memo):
     print(f"{'Process No.':<15}{'Process Size':<15}{'Block No.':<15}{'Remaining Memory':<15}")
     for i in range(len(process)):
@@ -26,6 +46,10 @@ if __name__ == "__main__":
     process = [220, 417, 112, 601, 50, 8]
 
     allocation, remaining_memo = first_fit(memory.copy(), process)
+    print('First_Fit Algorithm')
+    display_outcome (allocation, remaining_memo)
+    allocation, remaining_memo = best_fit(memory.copy(), process)
+    print('Best_Fit Algorithm')
     display_outcome (allocation, remaining_memo)
 
 
