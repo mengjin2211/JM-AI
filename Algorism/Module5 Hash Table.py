@@ -59,7 +59,7 @@ def main():
     user_id=["user_1","user_2","user_3"]
     for i in user_id:
         recommendations = ContentRecommendation(i, user_table, content_table)
-        print(f"Recommendations for {i}: {recommendations}")
+        print(f"Recommendations for {i}: \n{recommendations}")
 
 if __name__ == "__main__":
     main()

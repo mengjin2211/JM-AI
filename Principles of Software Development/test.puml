@@ -1,44 +1,55 @@
+' Consumer Protection BC Data Architecture Diagram Code
+
 @startuml
+!define RECTANGLE class
+skinparam linetype ortho
+skinparam nodesep 50
+skinparam ranksep 50
+skinparam classBackgroundColor #F0F0F0
+skinparam classBorderColor #333333
+skinparam classFontColor #000000
+skinparam arrowColor #333333
+skinparam arrowFontColor #333333
+title <b>Consumer Protection BC Data Architecture</b>
 
-[*] --> Idle
-
-state Idle {
-  [*] --> Idle
-  Idle --> CardInserted : InsertCard / None
+caption:This diagram outlines a scalable data solution for Consumer Protection BC with AI-driven cleaning and annotation
+package "Cloud Environment" {
+    RECTANGLE "Data Warehouse" as DataWarehouse #FFD700 {
+    - Centralized Data Storage
+    - ETL (Extract, Transform, Load)/ELT
+    - Real-Time Access
+    }
+    RECTANGLE "AI-Driven Cleaning" as AICleaning #87CEEB {
+    - Automated Data Cleaning
+    - Data Transformation
+    }
+    RECTANGLE "Analytics Platform" as AnalyticsPlatform #98FB98 {
+    - Historical & Real-time Data Analysis
+    - BI Reporting
+    - Scalable Cloud ML Tools (e.g., AWS SageMaker)
+    - NLP Libraries for unstructured data
+    }
+    RECTANGLE "LLM Data Annotation" as LLMAnnotation #FFA07A {
+    - AI Large Language Models
+    - Unstructured Data Annotation
+    - Categorization
+    }
+}
+RECTANGLE "Data Sources" as DataSources #FFB6C1 {
+    - Structured Data (Ops SQL DB)
+    - Unstructured Data (Inspection Q&A)
 }
 
-state CardInserted {
-  [*] --> CardInserted
-  CardInserted --> Authenticating : EnterPin / None
-}
 
-state Authenticating {
-  [*] --> Authenticating
-  Authenticating --> Authenticated : CheckPin [Correct PIN] / Reset error counter
-  Authenticating --> Authenticating : CheckPin [Incorrect PIN] / Increment error counter
-  Authenticating --> Rejected : CheckPin [Incorrect PIN and error counter > limit] / None
+RECTANGLE "Data Governance Framework" as DataGovernance #DDA0DD {
+    - Data Integrity
+    - Security
+    - Compliance
 }
-
-state Authenticated {
-  [*] --> Authenticated
-  Authenticated --> Withdrawing : WithdrawMoney [Balance > 0] / Deduct amount from balance
-  Authenticated --> AccountClosed : WithdrawMoney [Balance = 0] / Close account
-}
-
-state Withdrawing {
-  [*] --> Withdrawing
-  Withdrawing --> Idle : TransactionComplete / Eject card
-}
-
-state AccountClosed {
-  [*] --> AccountClosed
-  AccountClosed --> Idle : TransactionComplete / Eject card
-}
-
-state Rejected {
-  [*] --> Rejected
-  Rejected --> Idle : TransactionComplete / Eject card
-}
-
+DataSources --> DataWarehouse : Ingest Data
+DataWarehouse --> AICleaning : Clean & Transform Data
+DataWarehouse --> LLMAnnotation : Annotate Unstructured Data
+AICleaning --> AnalyticsPlatform : Provide Clean Data
+LLMAnnotation --> AnalyticsPlatform : Provide Structured Data
+AnalyticsPlatform --> DataGovernance  
 @enduml
-

@@ -1,0 +1,38 @@
+
+
+@startuml
+skinparam linetype ortho
+
+title High-Level Data Architecture
+
+package "Data Sources" {
+  [Operational SQL Database] --> [ETL Pipeline]
+  [Unstructured Data] --> [ETL Pipeline]
+  [External APIs] --> [ETL Pipeline]
+}
+
+package "ETL Pipelines" {
+  [ETL Pipeline] --> [Data Warehouse]
+}
+
+package "Data Warehouse" {
+  [Data Warehouse] --> [Power BI Dashboards]
+  [Data Warehouse] --> [Machine Learning Models]
+}
+
+package "Analytics & Reporting" {
+  [Power BI Dashboards] --> [Business Users]
+}
+
+package "Advanced Analytics" {
+  [Machine Learning Models] --> [Data Scientists]
+}
+
+note right of [ETL Pipeline]
+  Extract, Transform, Load (ETL)
+  - Automates data cleaning
+  - Centralizes data
+  - Supports scalability
+end note
+
+@enduml
