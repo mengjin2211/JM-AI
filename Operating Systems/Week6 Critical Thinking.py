@@ -1,14 +1,17 @@
 import random
 import time
-import os 
-import multiprocessing 
-def RandomNumbers(file, start, end):
-    #seq_time_start = time.time()
+import os
+import numpy as np
+import multiprocessing
+import threading
+from concurrent.futures import ThreadPoolExecutor
+
+def optimized_random_numbers(file, start, end, chunk=100000):
+    """ Optimization with Numpy and Chunks."""
     with open(file, "w") as f:
-        for _ in range(start, end):
-            f.write(f"{random.randint(0, 32767)}\n")
-    #seq_time_end = time.time()
-    #print(f'Sequential Streaming Processing Time: {seq_time_end - seq_time_start:.4f} seconds.')
+        for _ in range((end - start) // chunk):
+            numbers = np.random.randint(0, 32767, size=chunk, dtype=np.int32)
+            f.write("\n".join(map(str, numbers)) + "\n")
 
 def removefile (file):
     os.remove(file) if os.path.exists(file) else print(f'{file} does not exist.')
@@ -29,7 +32,7 @@ def parallel_processing(num_files, total_rows=10000000):
         start = i * chunk_size
         end = (i + 1) * chunk_size if i != num_files - 1 else total_rows
         
-        p = multiprocessing.Process(target=RandomNumbers, args=(file_name, start, end))
+        p = multiprocessing.Process(target=optimized_random_numbers, args=(file_name, start, end))
         processes.append(p)
         p.start()
     
@@ -41,9 +44,31 @@ def parallel_processing(num_files, total_rows=10000000):
     remove_files(num_files)
 
 
+def multi_threading_processing(num_files, total_rows=10000000):
+    """ Multi-threading approach using ThreadPoolExecutor """
+    chunk_size = total_rows // num_files
+
+    start_time = time.time()
+    
+    with ThreadPoolExecutor(max_workers=num_files) as executor:
+        for i in range(num_files):
+            file_name = f"file_{i}.txt"
+            start = i * chunk_size
+            end = (i + 1) * chunk_size if i != num_files - 1 else total_rows
+            executor.submit(optimized_random_numbers, file_name, start, end)
+
+    end_time = time.time()
+    print(f"Multi-Threading Time ({num_files} files): {end_time - start_time:.4f} seconds")
+    remove_files(num_files)
+
 if __name__ == "__main__":
-    removefile ("file1.txt")
-    RandomNumbers("file1.txt", 0, 10000000)
+    removefile("file1.txt")
+    optimized_random_numbers("file1.txt", 0, 10000000)
+
     for num_files in [1, 2, 5, 10, 20]:
-        parallel_processing(num_files=num_files) 
- 
+        #print("\n==== Multi-Processing ====")
+        parallel_processing(num_files=num_files)
+        
+        #print("\n==== Multi-Threading ====")
+        #multi_threading_processing(num_files=num_files)
+
