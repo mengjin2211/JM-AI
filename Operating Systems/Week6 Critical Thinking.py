@@ -1,11 +1,9 @@
 import random
 import time
-import os
-import numpy as np
+import os 
 import multiprocessing 
-
-def optimized_random_numbers(file, start, end, chunk=100000):
-    """ Optimization with Numpy and Chunks."""
+def RandomNumbers(file, start, end):
+    #seq_time_start = time.time()
     with open(file, "w") as f:
         for _ in range((end - start) // chunk):
             numbers = np.random.randint(0, 32767, size=chunk, dtype=np.int32)
@@ -41,8 +39,10 @@ def parallel_processing(num_files, total_rows=10000000):
     print(f"Parallel Processing Time ({num_files} files): {end_time - start_time:.4f} seconds")
     remove_files(num_files)
 
+
 if __name__ == "__main__":
     removefile ("file1.txt")
-    optimized_random_numbers("file1.txt", 0, 10000000)
+    RandomNumbers("file1.txt", 0, 10000000)
     for num_files in [1, 2, 5, 10, 20]:
-        parallel_processing(num_files=num_files) 	
+        parallel_processing(num_files=num_files) 
+ 
