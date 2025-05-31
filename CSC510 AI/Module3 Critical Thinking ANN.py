@@ -1,5 +1,4 @@
 """ Simple ANN demo for credit default prediction.
-Refreshes basics: forward/backprop, loss, activation.
 Dataframe is a small sample for demo purposes. """
 
 import numpy as np
@@ -36,7 +35,7 @@ input_size = X.shape[1]
 hidden_size = 4
 output_size = 1
 learning_rate = 0.1
-epochs = 1000
+ 
 np.random.seed(42)
 W1 = np.random.randn(input_size, hidden_size) * 0.01
 b1 = np.zeros(hidden_size)
@@ -47,7 +46,7 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 # Training
-for epoch in range(epochs):
+for epoch in range(1000):
     hidden_output = sigmoid(np.dot(X, W1) + b1)
     output = sigmoid(np.dot(hidden_output, W2) + b2)
     d_loss = (output - y)
@@ -75,7 +74,7 @@ for idx, (pred, actual) in zip(df.index, zip(train_preds.ravel(), y.ravel())):
 
 # User input
 credit_history = input("Enter credit history ('bad' or 'good'): ").strip()
-amount = float(input("Enter loan amount (e.g., 1169, 4870): ").strip())
+amount = float(input("Enter loan amount in whole number (e.g., 1169, 4870): ").strip())
 job = input("Enter job status ('yes', 'no'): ").strip()
 
 user_row = pd.DataFrame([{
@@ -88,4 +87,3 @@ X_user, _ = data_processing(user_row)
 user_input_predict = predict(X_user)
 print(f"Probability of default for the applicant: {user_input_predict.item():.4f}")
 print('End of the credit default prediction demo. Thank you for using this tool!')
-
