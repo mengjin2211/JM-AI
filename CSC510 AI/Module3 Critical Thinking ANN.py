@@ -1,4 +1,5 @@
 """ Simple ANN demo for credit default prediction.
+Refreshes basics: forward/backprop, loss, activation.
 Dataframe is a small sample for demo purposes. """
 
 import numpy as np
@@ -45,14 +46,21 @@ b2 = np.zeros(output_size)
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
-# Training
-for epoch in range(1000):
+def predict(X): #forward propagation
     hidden_output = sigmoid(np.dot(X, W1) + b1)
     output = sigmoid(np.dot(hidden_output, W2) + b2)
+    return [output,  hidden_output]
+
+# Training/ backpropagation
+for epoch in range(1000):
+    output,  hidden_output=predict(X)
     d_loss = (output - y)
+    # gradient for output layer
     dW2 = np.dot(hidden_output.T, d_loss * output * (1 - output)) / len(X)
     db2 = np.mean(d_loss * output * (1 - output), axis=0)
+    # gradient for hidden layer activation
     d_hidden = np.dot(d_loss * output * (1 - output), W2.T) * hidden_output * (1 - hidden_output)
+    # gradient for hidden layer weights and biases
     dW1 = np.dot(X.T, d_hidden) / len(X)
     db1 = np.mean(d_hidden, axis=0)
     W1 -= learning_rate * dW1
@@ -60,12 +68,7 @@ for epoch in range(1000):
     W2 -= learning_rate * dW2
     b2 -= learning_rate * db2
 
-def predict(X):
-    hidden_output = sigmoid(np.dot(X, W1) + b1)
-    output = sigmoid(np.dot(hidden_output, W2) + b2)
-    return output
-
-train_preds = predict(X)
+train_preds,_ = predict(X)
 
 print('Credit Default Prediction Demo')
 print('_' * 20)
@@ -84,6 +87,6 @@ user_row = pd.DataFrame([{
 }])
 
 X_user, _ = data_processing(user_row)
-user_input_predict = predict(X_user)
-print(f"Probability of default for the applicant: {user_input_predict.item():.4f}")
+user_input_predict,_ = predict(X_user)
+print(f"Probability of default for the applicant: {user_input_predict[0,0]:.4f}")
 print('End of the credit default prediction demo. Thank you for using this tool!')
