@@ -4,7 +4,7 @@ Dataframe is a small sample for demo purposes. """
 
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 # Sample data
 data_training = {
@@ -16,10 +16,10 @@ data_training = {
 df = pd.DataFrame(data_training, index=['applicant1', 'applicant2'])
 print(df)
 
-# Encoders and scaler
+# feature processing
 credit_history_encoder = LabelEncoder().fit(df['credit_history'])
 job_encoder = LabelEncoder().fit(df['job'])
-scaler = MinMaxScaler().fit(df[['amount']])
+scaler = StandardScaler().fit(df[['amount']])
 
 def data_processing(df):
     df['credit_history'] = credit_history_encoder.transform(df['credit_history'])
@@ -36,39 +36,46 @@ input_size = X.shape[1]
 hidden_size = 4
 output_size = 1
 learning_rate = 0.1
- 
-np.random.seed(42)
-W1 = np.random.randn(input_size, hidden_size) * 0.01
-b1 = np.zeros(hidden_size)
-W2 = np.random.randn(hidden_size, output_size) * 0.01
-b2 = np.zeros(output_size)
+
+weight1 = np.random.randn(input_size, hidden_size) * 0.01
+bias1 = np.zeros(hidden_size)
+weight2 = np.random.randn(hidden_size, output_size) * 0.01
+bias2 = np.zeros(output_size)
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
-def predict(X): #forward propagation
-    hidden_output = sigmoid(np.dot(X, W1) + b1)
-    output = sigmoid(np.dot(hidden_output, W2) + b2)
+def predict(X_input, weight1, bias1, weight2, bias2): #forward propagation
+    hidden_output = sigmoid(np.dot(X_input, weight1) + bias1)
+    output = sigmoid(np.dot(hidden_output, weight2) + bias2)
     return [output,  hidden_output]
 
 # Training/ backpropagation
 for epoch in range(1000):
-    output,  hidden_output=predict(X)
-    d_loss = (output - y)
+    output,  hidden_output = predict(X, weight1, bias1, weight2, bias2)
+    error2 = (output - y)
     # gradient for output layer
-    dW2 = np.dot(hidden_output.T, d_loss * output * (1 - output)) / len(X)
-    db2 = np.mean(d_loss * output * (1 - output), axis=0)
+    delta2 = error2 * output * (1 - output)
+    d_weight2 = np.dot(hidden_output.T, delta2) / len(X)
+    d_bias2 = np.mean(delta2, axis=0)
+    
     # gradient for hidden layer activation
-    d_hidden = np.dot(d_loss * output * (1 - output), W2.T) * hidden_output * (1 - hidden_output)
+    error1 = np.dot(delta2, weight2.T)
+    delta1 = error1 * hidden_output * (1 - hidden_output)
+    
     # gradient for hidden layer weights and biases
-    dW1 = np.dot(X.T, d_hidden) / len(X)
-    db1 = np.mean(d_hidden, axis=0)
-    W1 -= learning_rate * dW1
-    b1 -= learning_rate * db1
-    W2 -= learning_rate * dW2
-    b2 -= learning_rate * db2
+    d_weight1 = np.dot(X.T, delta1) / len(X)
+    d_bias1 = np.mean(delta1, axis=0)
+    
+    weight1 -= learning_rate * d_weight1
+    bias1 -= learning_rate * d_bias1
+    weight2 -= learning_rate * d_weight2
+    bias2 -= learning_rate * d_bias2
+    
+    if epoch % 100 == 0:  
+        loss = np.mean(0.5 * (error2**2)) 
 
-train_preds,_ = predict(X)
+train_preds,_ = predict(X, weight1, bias1, weight2, bias2)
 
 print('Credit Default Prediction Demo')
 print('_' * 20)
@@ -87,6 +94,8 @@ user_row = pd.DataFrame([{
 }])
 
 X_user, _ = data_processing(user_row)
-user_input_predict,_ = predict(X_user)
-print(f"Probability of default for the applicant: {user_input_predict[0,0]:.4f}")
+user_input_predict,_ = predict(X_user, weight1, bias1, weight2, bias2)
+user_prediction_prob = user_input_predict[0,0]
+user_prediction_text = "low default risk" if user_prediction_prob < 0.5 else "default risk"
+print(f"Prediction for the applicant: {user_prediction_text} (Probability: {user_prediction_prob:.4f})")
 print('End of the credit default prediction demo. Thank you for using this tool!')
